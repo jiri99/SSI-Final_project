@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import math
 
 
-def plot_map(map):
+def plot_map(map, debugmode = False, savefigure = False):
     ####################
-    # Task 6
+    # Task 9
     ####################
     plt.plot()
     
