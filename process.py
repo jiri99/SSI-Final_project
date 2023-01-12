@@ -32,6 +32,13 @@ def next_ped_step(pedestrian):
     ####################
     return x, y 
 
+def find_conflicts(pedestrians, all_steps):
+    conflict = False
+    ####################
+    # Task 7
+    ####################
+    return conflict
+
 def solve_conflicts(pedestrians, all_steps):
     ####################
     # Task 7
@@ -41,12 +48,12 @@ def solve_conflicts(pedestrians, all_steps):
 def next_steps(pedestrians):
     all_steps = pd.DataFrame({"x": [], "y": []})
     ####################
-    # Task 8
+    # Task 6
     ####################
     return all_steps
 
 def make_step(pedestrians):
     ####################
-    # Task 8
+    # Task 7
     ####################
     return pedestrians

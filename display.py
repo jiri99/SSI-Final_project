@@ -4,9 +4,15 @@ import matplotlib.pyplot as plt
 import math
 
 
-def plot_map(map, debugmode = False, savefigure = False):
+def plot_single_map(pedestrian, debugmode = False):
     ####################
-    # Task 9
+    # Task 8
+    ####################
+    plt.plot()
+
+def plot_map(pedestrians, savefigure = False, plotpath = "./plots/maze.jpg"):
+    ####################
+    # Task 8
     ####################
     plt.plot()
     

@@ -1,0 +1,8 @@
+# graphic files
+**/*.png
+**/*.jpg
+**/*.svg
+**/*.pdf
+
+# data files
+**/*.csv
