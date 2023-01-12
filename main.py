@@ -13,6 +13,3 @@ map, pedestrians = m.test_init(dim, ped_number)
 
 while(not p.all_out(pedestrians)):
     pedestrians = p.make_step(pedestrians)
-    
-
-
