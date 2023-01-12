@@ -33,6 +33,9 @@ def generate_pedestrian_map(map, ped_number):
   pedestrians = list()
   for i in range(0, ped_number):
     map_init = generate_init_positions(map)
+    ####################
+    # Task 3
+    ####################
     pedestrians.append({"map": map_init})
   return pedestrians
 
