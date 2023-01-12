@@ -17,6 +17,7 @@ def generate_map(dim):
   ####################
   # Task 1
   ####################
+  print(map)
   return map
 
 def valid_position(map, x, y):
