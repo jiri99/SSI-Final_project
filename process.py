@@ -26,7 +26,8 @@ def best_step(steps):
     return
 
 def next_ped_step(pedestrian):
-    x, y = 0
+    x = 0
+    y = 0
     ####################
     # Task 6
     ####################
