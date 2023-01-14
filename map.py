@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import random
+from copy import deepcopy
 
 
 def generate_map(dim):
@@ -35,10 +36,12 @@ def generate_init_position(map):
 
 def generate_pedestrian_maps(map, ped_number):
     pedestrians = list()
+    map_copy = deepcopy(map)
     for i in range(0, ped_number):
-        x_ped, y_ped = generate_init_position(map)
-        map[x_ped, y_ped] = 1
-        pedestrians.append({"map": map, "x": x_ped, "y": y_ped})
+        x_ped, y_ped = generate_init_position(map_copy)
+        map_copy[x_ped, y_ped] = 1
+        pedestrians.append({"map": deepcopy(map), "x": x_ped, "y": y_ped})
+        pedestrians[i]["map"][x_ped, y_ped] = 1
     return pedestrians
 
 def test_init(dim, ped_number):
