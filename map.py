@@ -25,11 +25,12 @@ def valid_position(map, x, y):
     return not np.isnan(map[x,y])
 
 def generate_init_position(map):
+    dim = len(map)
     x = 0 
     y = 0
-    ####################
-    # Task 2
-    ####################
+    while map[x,y] != 0: 
+        x = random.randint(0,dim-1)
+        y = random.randint(0,dim-1)
     return x, y
 
 def generate_pedestrian_maps(map, ped_number):
