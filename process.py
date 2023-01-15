@@ -33,6 +33,12 @@ def next_ped_step(pedestrian):
     ####################
     return x, y 
 
+def rewrite_map(pedestrian):
+    ####################
+    # Task 9
+    ####################
+    return pedestrian
+
 def find_conflicts(pedestrians, all_steps):
     conflict = False
     ####################
