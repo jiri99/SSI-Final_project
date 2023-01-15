@@ -5,6 +5,13 @@ import math
 from map import valid_position
 
 
+def pedestrian_out(pedestrian):
+    outside = True
+    ####################
+    # Task 5
+    ####################
+    return outside
+
 def all_out(pedestrians):
     outside = True
     ####################
