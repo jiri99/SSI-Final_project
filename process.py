@@ -7,6 +7,7 @@ from map import valid_position
 
 def pedestrian_out(pedestrian):
     outside = True
+    pedestrian["x"] == 0 or pedestrian["y"] == 0
     ####################
     # Task 5
     ####################
@@ -14,6 +15,8 @@ def pedestrian_out(pedestrian):
 
 def all_out(pedestrians):
     outside = True
+    for pedestrian in pedestrians:
+        pedestrian_out(pedestrian)
     ####################
     # Task 5
     ####################
