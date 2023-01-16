@@ -28,11 +28,14 @@ def avalible_steps(pedestrian):
     return steps
 
 def best_step(steps, pedestrian):
-    
-    ####################
-    # Task 6
-    ####################
-    return
+    values = []
+    for index, row in steps.iterrows():
+        values.append(pedestrian["map"][row.x,row.y])
+    steps["values"] = values
+    step = steps[steps.values == steps.values.min()]
+    index = random.randint(0,len(step.index)-1)
+    chosen_step = steps.iloc[index]
+    return chosen_step
 
 def next_ped_step(pedestrian):
     steps = avalible_steps(pedestrian)
