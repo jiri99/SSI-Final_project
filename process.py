@@ -65,9 +65,8 @@ def solve_conflicts(pedestrians, all_steps):
     
 def next_steps(pedestrians):
     all_steps = pd.DataFrame({"x": [], "y": []})
-    ####################
-    # Task 6
-    ####################
+    for pedestrian in pedestrians:
+        all_steps.loc[len(all_steps.index)] = next_ped_step(pedestrian)
     return all_steps
 
 def make_step(pedestrians):
