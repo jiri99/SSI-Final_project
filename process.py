@@ -21,23 +21,24 @@ def all_out(pedestrians):
 
 def avalible_steps(pedestrian):
     steps = pd.DataFrame({"x": [], "y": []})
-    ####################
-    # Task 6
-    ####################
+    for i in [-1,0,1]:
+        for j in [-1,0,1]:
+            if(not np.isnan(pedestrian["map"][pedestrian["x"]+i,pedestrian["y"]+j]) and j!=0 and i!=0):
+                steps.loc[len(steps.index)] = [int(pedestrian["x"]+i),int(pedestrian["y"]+j)]
     return steps
 
-def best_step(steps):
+def best_step(steps, pedestrian):
+    
     ####################
     # Task 6
     ####################
     return
 
 def next_ped_step(pedestrian):
-    x = 0
-    y = 0
-    ####################
-    # Task 6
-    ####################
+    steps = avalible_steps(pedestrian)
+    chosen_step = best_step(steps, pedestrian)
+    x = chosen_step.x
+    y = chosen_step.y
     return x, y 
 
 def rewrite_map(pedestrian):
