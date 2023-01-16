@@ -6,20 +6,17 @@ from map import valid_position
 
 
 def pedestrian_out(pedestrian):
-    outside = True
-    pedestrian["x"] == 0 or pedestrian["y"] == 0
-    ####################
-    # Task 5
-    ####################
+    outside = False
+    dim = len(pedestrian["map"])
+    if(pedestrian["x"] == 0 or pedestrian["y"] == 0 or pedestrian["x"] == dim or pedestrian["y"] == dim ):
+        outside = True
     return outside
 
 def all_out(pedestrians):
     outside = True
     for pedestrian in pedestrians:
-        pedestrian_out(pedestrian)
-    ####################
-    # Task 5
-    ####################
+        if(pedestrian_out(pedestrian) == False):
+            outside = False
     return outside
 
 def avalible_steps(pedestrian):
