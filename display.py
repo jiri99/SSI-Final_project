@@ -19,7 +19,7 @@ def plot_single_map(i, pedestrians, debugmode = False, savefigure = False, plotp
 
 def plot_map(pedestrians, savefigure = False, plotpath = "./plots/maze.jpg"):
     map = deepcopy(pedestrians[0]["map"])
-    map[map > 2] = 0
+    map[map > 1] = 0
     map[np.isnan(map)] = -1
     for i in range(1, len(pedestrians)):
         map[pedestrians[i]["x"], pedestrians[i]["y"]] = 1  
