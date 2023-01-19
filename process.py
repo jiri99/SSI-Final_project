@@ -50,14 +50,15 @@ def rewrite_map(pedestrian):
     ####################
     return pedestrian
 
-def find_conflicts(pedestrians, all_steps):
+def find_conflicts(all_steps):
     conflict = False
-    ####################
-    # Task 7
-    ####################
+
+    if all_steps.duplicated() == True:
+        conflict = True
     return conflict
 
 def solve_conflicts(pedestrians, all_steps):
+
     ####################
     # Task 7
     ####################
@@ -70,7 +71,8 @@ def next_steps(pedestrians):
     return all_steps
 
 def make_step(pedestrians):
-    ####################
-    # Task 7
-    ####################
+    final_steps = solve_conflicts(pedestrians, all_steps)
+    for index, row in final_steps.iterrows():
+        pedestrians[index]["x"] = row.x
+        pedestrians[index]["y"] = row.y
     return pedestrians
