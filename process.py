@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from map import valid_position
+from copy import deepcopy
 
 
 def pedestrian_out(pedestrian):
@@ -59,9 +60,25 @@ def find_conflicts(all_steps):
 
 def solve_conflicts(pedestrians, all_steps):
 
-    ####################
-    # Task 7
-    ####################
+    if find_conflicts(all_steps) == True:
+        duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
+        all_steps_copy = deepcopy(all_step)
+        duplicated = all_steps[all_steps.x == duplicated_rows.iloc[1]["x"] and all_steps.y == duplicated_rows.iloc[1]["y"]]
+        chosen_ped_index = random.randint(0,len(duplicated)-1)
+        for index, rows in duplicated_rows.iterrows():
+            all_steps[index]["x"] = pedestrians[index]["x"]
+            all_steps[index]["y"] = pedestrians[index]["y"]
+
+
+    #duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
+    #while(len(duplicated_rows) > 0):
+    #    duplicated = all_steps[all_steps.x == duplicated_rows.iloc[1]["x"] and all_steps.y == duplicated_rows.iloc[1]["y"]]
+    #    chosen_ped_index = random.randint(0,len(duplicated)-1)
+    #    index = duplicated[chosen_ped_index].index
+    #    for index, rows in duplicated_rows.iterrows():
+    #       all_steps[index]["x"] = pedestrians[index]["x"]
+    #       all_steps[index]["y"] = pedestrians[index]["y"]
+    #    duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
     return all_steps
     
 def next_steps(pedestrians):
