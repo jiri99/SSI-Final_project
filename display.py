@@ -13,9 +13,9 @@ def plot_single_map(i, pedestrians, debugmode = False, savefigure = False, plotp
                 plt.text(m, n, int(c), va='center', ha='center')
     plt.imshow(map)
     plt.axis('off')
-    plt.plot()
     if savefigure == True:
         plt.savefig(plotpath)
+    plt.show()
 
 def plot_map(pedestrians, savefigure = False, plotpath = "./plots/maze.jpg"):
     map = deepcopy(pedestrians[0]["map"])
@@ -25,8 +25,8 @@ def plot_map(pedestrians, savefigure = False, plotpath = "./plots/maze.jpg"):
         map[int(pedestrians[i]["x"]), int(pedestrians[i]["y"])] = 1  
     plt.imshow(map)
     plt.axis('off')
-    plt.show()
     if savefigure == True:
         plt.savefig(plotpath)
+    plt.show()
 
     
