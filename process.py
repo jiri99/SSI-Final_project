@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from map import valid_position
+from potential import *
 from copy import deepcopy
 import random
 
@@ -45,12 +46,6 @@ def next_ped_step(pedestrian):
     x = chosen_step.x
     y = chosen_step.y
     return x, y 
-
-def rewrite_map(pedestrian):
-    ####################
-    # Task 9
-    ####################
-    return pedestrian
 
 def find_conflicts(all_steps):
     conflict = False
