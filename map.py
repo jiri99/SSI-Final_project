@@ -40,7 +40,7 @@ def generate_pedestrian_maps(map, ped_number):
     for i in range(0, ped_number):
         x_ped, y_ped = generate_init_position(map_copy)
         map_copy[x_ped, y_ped] = 1
-        pedestrians.append({"map": deepcopy(map), "x": x_ped, "y": y_ped})
+        pedestrians.append({"map": deepcopy(map), "x": x_ped, "y": y_ped, "outside": False})
         pedestrians[i]["map"][x_ped, y_ped] = 1
     return pedestrians
 

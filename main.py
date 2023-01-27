@@ -9,7 +9,7 @@ import display as disp
 
 
 dim = 11
-ped_number  = 3
+ped_number  = 10
 
 map, pedestrians = m.test_init(dim, ped_number)
 
