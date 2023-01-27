@@ -60,15 +60,6 @@ def find_conflicts(all_steps):
     return conflict
 
 def solve_conflicts(pedestrians, all_steps):
-    # if find_conflicts(all_steps) == True:
-    #     duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
-    #     all_steps_copy = deepcopy(all_steps)
-    #     duplicated = all_steps[all_steps.x == duplicated_rows.iloc[1]["x"] and all_steps.y == duplicated_rows.iloc[1]["y"]]
-    #     chosen_ped_index = random.randint(0,len(duplicated)-1)
-    #     for index, rows in duplicated_rows.iterrows():
-    #         all_steps[index]["x"] = pedestrians[index]["x"]
-    #         all_steps[index]["y"] = pedestrians[index]["y"]
-
     duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
     while(len(duplicated_rows) > 0):
         duplicated = all_steps[(all_steps.x == duplicated_rows.iloc[0]["x"]) & (all_steps.y == duplicated_rows.iloc[0]["y"])]
