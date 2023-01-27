@@ -22,10 +22,10 @@ def plot_map(pedestrians, savefigure = False, plotpath = "./plots/maze.jpg"):
     map[map > 1] = 0
     map[np.isnan(map)] = -1
     for i in range(1, len(pedestrians)):
-        map[pedestrians[i]["x"], pedestrians[i]["y"]] = 1  
+        map[int(pedestrians[i]["x"]), int(pedestrians[i]["y"])] = 1  
     plt.imshow(map)
     plt.axis('off')
-    plt.plot()
+    plt.show()
     if savefigure == True:
         plt.savefig(plotpath)
 
