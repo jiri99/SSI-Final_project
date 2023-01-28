@@ -5,8 +5,10 @@ import math
 import random
 from copy import deepcopy
 
-"""@section test_generator
-This script provides all the variables needed to run the test"""
+"""
+@section test_generator
+This script provides all the variables needed to run the test
+"""
 
 
 """!

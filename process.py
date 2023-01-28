@@ -13,6 +13,7 @@ pd.options.mode.chained_assignment = None
 This script provides finding the next steps of pedestrians, resolving conflicts and making these steps.
 """
 
+
 """!
 Function evaluates whether the pedestrian is outside the maze.
 
