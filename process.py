@@ -6,6 +6,7 @@ from map import valid_position
 from potential import *
 from copy import deepcopy
 import random
+pd.options.mode.chained_assignment = None
 
 """!
 @section process
@@ -51,9 +52,9 @@ def avalible_steps(pedestrian):
     steps = pd.DataFrame({"x": [], "y": []})
     for i in [-1,0,1]:
         for j in [-1,0,1]:
-            if((not np.isnan(pedestrian["map"][int(pedestrian["x"]+i), int(pedestrian["y"]+j)])) and (j!=0 or i!=0)):
-                steps.loc[len(steps.index)] = [int(pedestrian["x"]+i), int(pedestrian["y"]+j)]
-    return steps
+            if((not np.isnan(pedestrian["map"][pedestrian["x"]+i, pedestrian["y"]+j])) and (j!=0 or i!=0)):
+                steps.loc[len(steps.index)] = [pedestrian["x"]+i, pedestrian["y"]+j]
+    return steps.astype({"x": int, "y": int})
 
 """!
 Function selects the best of all possible steps for a single pedestrian.
@@ -66,11 +67,11 @@ Function selects the best of all possible steps for a single pedestrian.
 def best_step(steps, pedestrian):
     values = []
     for index, row in steps.iterrows():
-        values.append(pedestrian["map"][int(row.x), int(row.y)])
-    steps["values"] = values
-    step = steps[steps.values == steps.values.min()]
+        values.append(pedestrian["map"][row.x, row.y])
+    steps["value"] = values
+    step = steps[steps.value == steps.value.min()]
     index = random.randint(0,len(step.index)-1)
-    chosen_step = steps.iloc[index]
+    chosen_step = steps.iloc[step.index[index]]
     return chosen_step
 
 """!
@@ -85,7 +86,32 @@ def next_ped_step(pedestrian):
     chosen_step = best_step(steps, pedestrian)
     x = chosen_step.x
     y = chosen_step.y
-    return x, y 
+    if(len(steps) == 1):
+        in_death_end = True
+        crossroad = False
+    elif(len(steps) > 2):
+        in_death_end = False
+        crossroad = True
+    else:
+        in_death_end = False
+        crossroad = False
+    return x, y, in_death_end, crossroad
+
+"""!
+Function creates a DataFrame of all pedestrians' steps.
+
+@param pedestrians  Array of dictionaries with information about pedestrains.
+
+@return Function returns the steps of all pedestrians as a DataFrame
+"""
+def next_steps(pedestrians):
+    all_steps = pd.DataFrame({"x": [], "y": [], "death_end": [], "crossroad": []})
+    for pedestrian in pedestrians:
+        if(not pedestrian_out(pedestrian)):
+            all_steps.loc[len(all_steps.index)] = next_ped_step(pedestrian)
+        else:
+            pedestrian["outside"] = True
+    return all_steps.astype({"x": int, "y": int, "death_end": bool, "crossroad": bool})
 
 """!
 Function detects whether more pedestrians want to enter the same field.
@@ -95,11 +121,8 @@ Function detects whether more pedestrians want to enter the same field.
 @return Function returns a boolean value depending on whether the function found the same next step field for more pedestrians.
 """
 def find_conflicts(all_steps):
-    conflict = False
-
-    if all_steps.duplicated() == True:
-        conflict = True
-    return conflict
+    conflicts = all_steps.loc[all_steps.duplicated(keep = False)].astype({"x": int, "y": int, "death_end": bool, "crossroad": bool})
+    return conflicts
 
 """!
 Function selects one of the pedestrians who want to enter the same field.
@@ -111,7 +134,7 @@ Function then keeps that pedestrian's step the same and leaves the rest of these
 @return Function returns a modified DataFrame of the coordinates of the possible destination fields of all pedestrians.
 """
 def solve_conflicts(pedestrians, all_steps):
-    duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
+    duplicated_rows = find_conflicts(all_steps)
     while(len(duplicated_rows) > 0):
         duplicated = all_steps[(all_steps.x == duplicated_rows.iloc[0]["x"]) & (all_steps.y == duplicated_rows.iloc[0]["y"])]
         chosen_ped_index = random.randint(0,len(duplicated)-1)
@@ -120,24 +143,8 @@ def solve_conflicts(pedestrians, all_steps):
             if(index != index_left):
                 all_steps.iloc[index].x = pedestrians[index]["x"]
                 all_steps.iloc[index].y = pedestrians[index]["y"]
-        duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
-    return all_steps
-
-"""!
-Function creates a DataFrame of all pedestrians' steps.
-
-@param pedestrians  Array of dictionaries with information about pedestrains.
-
-@return Function returns the steps of all pedestrians as a DataFrame
-"""   
-def next_steps(pedestrians):
-    all_steps = pd.DataFrame({"x": [], "y": []})
-    for pedestrian in pedestrians:
-        if(not pedestrian_out(pedestrian)):
-            all_steps.loc[len(all_steps.index)] = next_ped_step(pedestrian)
-        else:
-            pedestrian["outside"] = True
-    return all_steps
+        duplicated_rows = find_conflicts(all_steps)
+    return all_steps    
 
 """!
 Function moves the pedestrians to the new fields.
@@ -148,8 +155,9 @@ Function moves the pedestrians to the new fields.
 """
 def make_step(pedestrians):
     all_steps = next_steps(pedestrians)
-    final_steps = solve_conflicts(pedestrians, all_steps)
+    final_steps = solve_conflicts(pedestrians, all_steps)    
     for index, row in final_steps.iterrows():
+        pedestrians[index] = assign_value(pedestrians[index], row)
         pedestrians[index]["x"] = row.x
         pedestrians[index]["y"] = row.y
     return pedestrians
