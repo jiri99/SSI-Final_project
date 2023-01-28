@@ -35,8 +35,8 @@ def best_step(steps, pedestrian):
     values = []
     for index, row in steps.iterrows():
         values.append(pedestrian["map"][row.x, row.y])
-    steps["values"] = values
-    step = steps[steps.values == steps.values.min()]
+    steps["value"] = values
+    step = steps[steps.value == steps.value.min()]
     index = random.randint(0,len(step.index)-1)
     chosen_step = steps.iloc[step.index[index]]
     return chosen_step
@@ -48,12 +48,26 @@ def next_ped_step(pedestrian):
     y = chosen_step.y
     if(len(steps) == 1):
         in_death_end = True
+        crossroad = False
+    elif(len(steps) > 2):
+        in_death_end = False
+        crossroad = True
     else:
         in_death_end = False
-    return x, y, in_death_end
+        crossroad = False
+    return x, y, in_death_end, crossroad
+
+def next_steps(pedestrians):
+    all_steps = pd.DataFrame({"x": [], "y": [], "death_end": [], "crossroad": []})
+    for pedestrian in pedestrians:
+        if(not pedestrian_out(pedestrian)):
+            all_steps.loc[len(all_steps.index)] = next_ped_step(pedestrian)
+        else:
+            pedestrian["outside"] = True
+    return all_steps.astype({"x": int, "y": int, "death_end": bool, "crossroad": bool})
 
 def find_conflicts(all_steps):
-    conflicts = all_steps.loc[all_steps.duplicated(keep = False)].astype({"x": int, "y": int, "death_end": bool})
+    conflicts = all_steps.loc[all_steps.duplicated(keep = False)].astype({"x": int, "y": int, "death_end": bool, "crossroad": bool})
     return conflicts
 
 def solve_conflicts(pedestrians, all_steps):
@@ -67,16 +81,7 @@ def solve_conflicts(pedestrians, all_steps):
                 all_steps.iloc[index].x = pedestrians[index]["x"]
                 all_steps.iloc[index].y = pedestrians[index]["y"]
         duplicated_rows = find_conflicts(all_steps)
-    return all_steps
-    
-def next_steps(pedestrians):
-    all_steps = pd.DataFrame({"x": [], "y": [], "death_end": []})
-    for pedestrian in pedestrians:
-        if(not pedestrian_out(pedestrian)):
-            all_steps.loc[len(all_steps.index)] = next_ped_step(pedestrian)
-        else:
-            pedestrian["outside"] = True
-    return all_steps.astype({"x": int, "y": int, "death_end": bool})
+    return all_steps    
 
 def make_step(pedestrians):
     all_steps = next_steps(pedestrians)

@@ -8,14 +8,14 @@ import random
 
 
 def assign_value(pedestrian, step):
+    if(step["death_end"]):
+        rewrite_map(pedestrian)
     current_value = pedestrian["map"][pedestrian["x"], pedestrian["y"]]
     if(current_value != 0):
         pedestrian["map"][step.x, step.y] = current_value - 1
     else:
         max_fields = (len(pedestrian["map"]))**2
         pedestrian["map"][step.x, step.y] = max_fields - 1
-    if(step["death_end"]):
-        rewrite_map(pedestrian)
     return pedestrian
 
 def rewrite_map(pedestrian):
