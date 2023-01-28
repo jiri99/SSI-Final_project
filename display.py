@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 
 
-def plot_single_map(i, pedestrians, debugmode = False, savefigure = False, plotpath = "./plots/maze.jpg"):
-    map = deepcopy(pedestrians[i]["map"])
+def plot_single_map(pedestrian, debugmode = False, savefigure = False, plotpath = "./plots/maze.jpg"):
+    map = deepcopy(pedestrian["map"])
     map[np.isnan(map)] = -1
-    if debugmode == True:
+    if debugmode:
         for m in range(len(map)):
             for n in range(len(map)):
                 c = map[n,m]
                 plt.text(m, n, int(c), va='center', ha='center')
     plt.imshow(map)
     plt.axis('off')
-    if savefigure == True:
+    if savefigure:
         plt.savefig(plotpath)
     plt.show()
 
@@ -25,7 +25,7 @@ def plot_map(pedestrians, savefigure = False, plotpath = "./plots/maze.jpg"):
         map[int(pedestrians[i]["x"]), int(pedestrians[i]["y"])] = 1  
     plt.imshow(map)
     plt.axis('off')
-    if savefigure == True:
+    if savefigure:
         plt.savefig(plotpath)
     plt.show()
 

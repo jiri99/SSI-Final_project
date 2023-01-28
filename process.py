@@ -7,6 +7,7 @@ from potential import *
 from copy import deepcopy
 import random
 
+pd.options.mode.chained_assignment = None
 
 def pedestrian_out(pedestrian):
     outside = False
@@ -26,18 +27,18 @@ def avalible_steps(pedestrian):
     steps = pd.DataFrame({"x": [], "y": []})
     for i in [-1,0,1]:
         for j in [-1,0,1]:
-            if((not np.isnan(pedestrian["map"][int(pedestrian["x"]+i), int(pedestrian["y"]+j)])) and (j!=0 or i!=0)):
-                steps.loc[len(steps.index)] = [int(pedestrian["x"]+i), int(pedestrian["y"]+j)]
-    return steps
+            if((not np.isnan(pedestrian["map"][pedestrian["x"]+i, pedestrian["y"]+j])) and (j!=0 or i!=0)):
+                steps.loc[len(steps.index)] = [pedestrian["x"]+i, pedestrian["y"]+j]
+    return steps.astype({"x": int, "y": int})
 
 def best_step(steps, pedestrian):
     values = []
     for index, row in steps.iterrows():
-        values.append(pedestrian["map"][int(row.x), int(row.y)])
+        values.append(pedestrian["map"][row.x, row.y])
     steps["values"] = values
     step = steps[steps.values == steps.values.min()]
     index = random.randint(0,len(step.index)-1)
-    chosen_step = steps.iloc[index]
+    chosen_step = steps.iloc[step.index[index]]
     return chosen_step
 
 def next_ped_step(pedestrian):
@@ -45,17 +46,18 @@ def next_ped_step(pedestrian):
     chosen_step = best_step(steps, pedestrian)
     x = chosen_step.x
     y = chosen_step.y
-    return x, y 
+    if(len(steps) == 1):
+        in_death_end = True
+    else:
+        in_death_end = False
+    return x, y, in_death_end
 
 def find_conflicts(all_steps):
-    conflict = False
-
-    if all_steps.duplicated() == True:
-        conflict = True
-    return conflict
+    conflicts = all_steps.loc[all_steps.duplicated(keep = False)].astype({"x": int, "y": int, "death_end": bool})
+    return conflicts
 
 def solve_conflicts(pedestrians, all_steps):
-    duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
+    duplicated_rows = find_conflicts(all_steps)
     while(len(duplicated_rows) > 0):
         duplicated = all_steps[(all_steps.x == duplicated_rows.iloc[0]["x"]) & (all_steps.y == duplicated_rows.iloc[0]["y"])]
         chosen_ped_index = random.randint(0,len(duplicated)-1)
@@ -64,22 +66,23 @@ def solve_conflicts(pedestrians, all_steps):
             if(index != index_left):
                 all_steps.iloc[index].x = pedestrians[index]["x"]
                 all_steps.iloc[index].y = pedestrians[index]["y"]
-        duplicated_rows = all_steps[all_steps.duplicated(keep = False)]
+        duplicated_rows = find_conflicts(all_steps)
     return all_steps
     
 def next_steps(pedestrians):
-    all_steps = pd.DataFrame({"x": [], "y": []})
+    all_steps = pd.DataFrame({"x": [], "y": [], "death_end": []})
     for pedestrian in pedestrians:
         if(not pedestrian_out(pedestrian)):
             all_steps.loc[len(all_steps.index)] = next_ped_step(pedestrian)
         else:
             pedestrian["outside"] = True
-    return all_steps
+    return all_steps.astype({"x": int, "y": int, "death_end": bool})
 
 def make_step(pedestrians):
     all_steps = next_steps(pedestrians)
-    final_steps = solve_conflicts(pedestrians, all_steps)
+    final_steps = solve_conflicts(pedestrians, all_steps)    
     for index, row in final_steps.iterrows():
+        pedestrians[index] = assign_value(pedestrians[index], row)
         pedestrians[index]["x"] = row.x
         pedestrians[index]["y"] = row.y
     return pedestrians
