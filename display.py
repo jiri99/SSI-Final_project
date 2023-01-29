@@ -2,7 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
 
+"""
+@section display
+This script provides a plot of map with pedestrians' positions.
+"""
 
+"""!
+Function plots the map of a single pedestrian.
+
+@param pedestrian  Dictionary of information about one pedestrian.
+"""
 def plot_single_map(pedestrian, debugmode = False, savefigure = False, plotpath = "./plots/maze.jpg"):
     map = deepcopy(pedestrian["map"])
     map[np.isnan(map)] = -1
@@ -17,6 +26,11 @@ def plot_single_map(pedestrian, debugmode = False, savefigure = False, plotpath 
         plt.savefig(plotpath)
     plt.show()
 
+"""!
+Function plots the map of all pedestrians.
+
+@param pedestrians  Array of dictionaries with information about pedestrains.
+"""
 def plot_map(pedestrians, savefigure = False, plotpath = "./plots/maze.jpg"):
     map = deepcopy(pedestrians[0]["map"])
     map[map > 1] = 0

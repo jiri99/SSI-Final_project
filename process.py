@@ -8,7 +8,7 @@ from copy import deepcopy
 import random
 pd.options.mode.chained_assignment = None
 
-"""!
+"""
 @section process
 This script provides finding the next steps of pedestrians, resolving conflicts and making these steps.
 """
@@ -77,10 +77,11 @@ def best_step(steps, pedestrian):
 
 """!
 Function finds the coordinates of the best step of the pedestrian.
+Function also detects whether the pedestrian is in a dead end, at a crossroad or is walking along a corridor.
 
 @param pedestrian  Dictionary of information about one pedestrian.
 
-@return Function returns the coordinates of the best step field.
+@return Function returns the coordinates of the best step field and boolean values depending on whether the pedestrian is in a dead end or crossroad.
 """
 def next_ped_step(pedestrian):
     steps = avalible_steps(pedestrian)
@@ -103,7 +104,8 @@ Function creates a DataFrame of all pedestrians' steps.
 
 @param pedestrians  Array of dictionaries with information about pedestrains.
 
-@return Function returns the steps of all pedestrians as a DataFrame
+@return Function returns the coordinates of steps of all pedestrians 
+and boolean values depending on whether the pedestrian is in a dead end or crossroad as a DataFrame
 """
 def next_steps(pedestrians):
     all_steps = pd.DataFrame({"x": [], "y": [], "death_end": [], "crossroad": []})
@@ -117,7 +119,8 @@ def next_steps(pedestrians):
 """!
 Function detects whether more pedestrians want to enter the same field.
 
-@param all_steps  DataFrame of the coordinates of the possible destination fields of all pedestrians.
+@param all_steps  DataFrame of the coordinates of the possible destination fields of all pedestrians
+and information about whether pedestrians are in a dead end or crossroad.
 
 @return Function returns a boolean value depending on whether the function found the same next step field for more pedestrians.
 """
@@ -130,7 +133,8 @@ Function selects one of the pedestrians who want to enter the same field.
 Function then keeps that pedestrian's step the same and leaves the rest of these pedestrians standing.
 
 @param pedestrians  Array of dictionaries with information about pedestrains.
-@param all_steps  DataFrame of the coordinates of the possible destination fields of all pedestrians.
+@param all_steps  DataFrame of the coordinates of the possible destination fields of all pedestrians
+and information about whether pedestrians are in a dead end or crossroad.
 
 @return Function returns a modified DataFrame of the coordinates of the possible destination fields of all pedestrians.
 """
