@@ -8,8 +8,8 @@ import process as p
 import display as disp
 
 
-dim = 11
-ped_number  = 10
+dim = 21
+ped_number = 3
 
 map, pedestrians = m.test_init(dim, ped_number)
 

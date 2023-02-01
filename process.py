@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from map import valid_position
-from potential import *
+from potential import assign_value, pedestrian_collision, synchronize_map
 from copy import deepcopy
 import random
 pd.options.mode.chained_assignment = None
@@ -51,10 +51,9 @@ Function finds all the possible steps for a single pedestrian.
 """
 def avalible_steps(pedestrian):
     steps = pd.DataFrame({"x": [], "y": []})
-    for i in [-1,0,1]:
-        for j in [-1,0,1]:
-            if((not np.isnan(pedestrian["map"][pedestrian["x"]+i, pedestrian["y"]+j])) and (j!=0 or i!=0)):
-                steps.loc[len(steps.index)] = [pedestrian["x"]+i, pedestrian["y"]+j]
+    for i, j in zip([-1,0,1,0],[0,-1,0,1]):
+        if((not np.isnan(pedestrian["map"][pedestrian["x"]+i, pedestrian["y"]+j])) and (j!=0 or i!=0)):
+            steps.loc[len(steps.index)] = [pedestrian["x"]+i, pedestrian["y"]+j]
     return steps.astype({"x": int, "y": int})
 
 """!
@@ -70,7 +69,10 @@ def best_step(steps, pedestrian):
     for index, row in steps.iterrows():
         values.append(pedestrian["map"][row.x, row.y])
     steps["value"] = values
-    step = steps[steps.value == steps.value.min()]
+    step = steps[steps.y == steps.y.max()]
+    step = step[step.value == step.value.min()]
+    if(len(step.index) == 0):
+        print("send help")
     index = random.randint(0,len(step.index)-1)
     chosen_step = steps.iloc[step.index[index]]
     return chosen_step
@@ -89,15 +91,15 @@ def next_ped_step(pedestrian):
     x = chosen_step.x
     y = chosen_step.y
     if(len(steps) == 1):
-        in_death_end = True
+        in_dead_end = True
         crossroad = False
     elif(len(steps) > 2):
-        in_death_end = False
+        in_dead_end = False
         crossroad = True
     else:
-        in_death_end = False
+        in_dead_end = False
         crossroad = False
-    return x, y, in_death_end, crossroad
+    return x, y, in_dead_end, crossroad
 
 """!
 Function creates a DataFrame of all pedestrians' steps.
@@ -108,13 +110,11 @@ Function creates a DataFrame of all pedestrians' steps.
 and boolean values depending on whether the pedestrian is in a dead end or crossroad as a DataFrame
 """
 def next_steps(pedestrians):
-    all_steps = pd.DataFrame({"x": [], "y": [], "death_end": [], "crossroad": []})
+    all_steps = pd.DataFrame({"x": [], "y": [], "dead_end": [], "crossroad": []})
     for pedestrian in pedestrians:
         if(not pedestrian_out(pedestrian)):
             all_steps.loc[len(all_steps.index)] = next_ped_step(pedestrian)
-        else:
-            pedestrian["outside"] = True
-    return all_steps.astype({"x": int, "y": int, "death_end": bool, "crossroad": bool})
+    return all_steps.astype({"x": int, "y": int, "dead_end": bool, "crossroad": bool})
 
 """!
 Function detects whether more pedestrians want to enter the same field.
@@ -125,7 +125,7 @@ and information about whether pedestrians are in a dead end or crossroad.
 @return Function returns a boolean value depending on whether the function found the same next step field for more pedestrians.
 """
 def find_conflicts(all_steps):
-    conflicts = all_steps.loc[all_steps.duplicated(keep = False)].astype({"x": int, "y": int, "death_end": bool, "crossroad": bool})
+    conflicts = all_steps.loc[all_steps.duplicated(keep = False)].astype({"x": int, "y": int, "dead_end": bool, "crossroad": bool})
     return conflicts
 
 """!
@@ -160,9 +160,17 @@ Function moves the pedestrians to the new fields.
 """
 def make_step(pedestrians):
     all_steps = next_steps(pedestrians)
-    final_steps = solve_conflicts(pedestrians, all_steps)    
+    final_steps = solve_conflicts(pedestrians, all_steps)
     for index, row in final_steps.iterrows():
         pedestrians[index] = assign_value(pedestrians[index], row)
         pedestrians[index]["x"] = row.x
         pedestrians[index]["y"] = row.y
+    for index in range(0,len(pedestrians)):
+        if(pedestrian_out(pedestrians[index])):
+            pedestrians.pop(index)
+            break
+    ped_id_1, ped_id_2 = pedestrian_collision(pedestrians)
+    if(len(ped_id_1) != 0 and len(ped_id_2) != 0):
+        for i in range(0,len(ped_id_1)):
+            pedestrians[ped_id_1[i]], pedestrians[ped_id_2[i]] = synchronize_map(pedestrians[ped_id_1[i]], pedestrians[ped_id_2[i]])
     return pedestrians
