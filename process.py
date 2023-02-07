@@ -146,8 +146,8 @@ def solve_conflicts(pedestrians, all_steps):
         index_left = duplicated.index[chosen_ped_index]
         for index, rows in duplicated.iterrows():
             if(index != index_left):
-                all_steps.iloc[index].x = pedestrians[index]["x"]
-                all_steps.iloc[index].y = pedestrians[index]["y"]
+                all_steps.x[index] = pedestrians[index]["x"]
+                all_steps.y[index] = pedestrians[index]["y"]
         duplicated_rows = find_conflicts(all_steps)
     return all_steps    
 
