@@ -10,9 +10,10 @@ def run_multiple_times(dim, ped_number, number_of_starts, save_iter = False):
     evacuation_time = []
     for i in range(number_of_starts):
         mapa, pedestrians = m.test_init(dim, ped_number)
+        removed_pedestrians = []
         counter = 0
         while(not p.all_out(pedestrians)):
-            pedestrians = p.make_step(pedestrians)
+            pedestrians, removed_pedestrians = p.make_step(pedestrians, removed_pedestrians)
             #disp.plot_map(pedestrians)
             #disp.plot_single_map(0)
             counter += 1

@@ -5,19 +5,21 @@ import map as m
 import process as p
 import display as disp
 from potential import pedestrian_collision
+from tqdm.notebook import tqdm
 
 def run_single_time(dim, ped_number):
     mapa, pedestrians = m.test_init(dim, ped_number)
+    removed_pedestrians = []
     interactions_single = []
     while(not p.all_out(pedestrians)):
-        pedestrians = p.make_step(pedestrians, False)
+        pedestrians, removed_pedestrians = p.make_step(pedestrians, removed_pedestrians, False)
         ped_id_1, ped_id_2 = pedestrian_collision(pedestrians)
         interactions_single.append(len(ped_id_1))
     return interactions_single
 
 def run_multiple_times(dim, ped_number, number_of_starts):
     interactions_set = []
-    for i in range(number_of_starts):
+    for i in tqdm(range(number_of_starts)):
         mapa, pedestrians = m.test_init(dim, ped_number)
         interactions_single = []
         while(not p.all_out(pedestrians)):

@@ -158,20 +158,26 @@ Function moves the pedestrians to the new fields.
 
 @return Function returns an array of dictionaries with new information about pedestrains.
 """
-def make_step(pedestrians, synchronize = True):
+def make_step(pedestrians, removed_pedestrians, synchronize = True):
     all_steps = next_steps(pedestrians)
     final_steps = solve_conflicts(pedestrians, all_steps)
     for index, row in final_steps.iterrows():
         pedestrians[index] = assign_value(pedestrians[index], row)
         pedestrians[index]["x"] = row.x
         pedestrians[index]["y"] = row.y
-    for index in range(0,len(pedestrians)):
-        if(pedestrian_out(pedestrians[index])):
-            pedestrians.pop(index)
-            break
+    pedestrians, removed_pedestrians = remove_pedestrians(pedestrians, removed_pedestrians)
     if(synchronize):
         ped_id_1, ped_id_2 = pedestrian_collision(pedestrians)
         if(len(ped_id_1) != 0 and len(ped_id_2) != 0):
             for i in range(0,len(ped_id_1)):
                 pedestrians[ped_id_1[i]], pedestrians[ped_id_2[i]] = synchronize_map(pedestrians[ped_id_1[i]], pedestrians[ped_id_2[i]])
-    return pedestrians
+    return pedestrians, removed_pedestrians
+
+
+def remove_pedestrians(pedestrians, removed_pedestrians):
+    for index in range(0,len(pedestrians)):
+        if(pedestrian_out(pedestrians[index])):
+            removed_pedestrians.append(pedestrians.pop(index))
+            break
+    return pedestrians, removed_pedestrians
+    

@@ -15,8 +15,9 @@ dim = 11
 ped_number  = 1
 
 map, pedestrians = m.test_init(dim, ped_number)
+removed_pedestrians = []
 
 while(not p.all_out(pedestrians)):
-    pedestrians = p.make_step(pedestrians)
+    pedestrians = p.make_step(pedestrians, removed_pedestrians)
     disp.plot_single_map(pedestrians[0], True)
     
