@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import plotly.express as px
 import map as m
 import process as p
 import display as disp
@@ -11,7 +13,8 @@ def run_multiple_times(dim, ped_number, number_of_starts, save_iter = False):
         counter = 0
         while(not p.all_out(pedestrians)):
             pedestrians = p.make_step(pedestrians)
-            disp.plot_map(pedestrians)
+            #disp.plot_map(pedestrians)
+            #disp.plot_single_map(0)
             counter += 1
             if counter > pow(dim,2):
                 counter = 0
@@ -36,8 +39,24 @@ def hist(evacuation_time, savefigure = False, plotpath = "./plots/hist.jpg"):
     if savefigure:
         plt.savefig(plotpath)
     plt.show()
-    
-    
-evacuation_time = run_multiple_times(dim = 21, ped_number = 3, number_of_starts = 5)
-box(evacuation_time)
-hist(evacuation_time)
+
+
+def heatmap(X):
+    X = pd.DataFrame(X)
+    df = px.data.tips(X)
+    fig = px.density_heatmap(df, x="evakuační čas", y="počet chodců")
+    fig.show()
+
+def generate_dataset(dim, number_of_starts, groups_of_peds):
+    ET = np.zeros((number_of_starts, groups_of_peds))
+    for i in range(1,groups_of_peds + 1):
+        evacuation_time = run_multiple_times(dim, i, number_of_starts)
+        ET[:,i] = evacuation_time
+    return ET
+
+ET = generate_dataset(dim = 21, number_of_starts = 200, groups_of_peds = 5)
+heatmap(ET)
+
+
+#box(evacuation_time)
+#hist(evacuation_time)
