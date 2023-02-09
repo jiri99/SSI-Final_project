@@ -52,7 +52,7 @@ def generate_dataset(dim, number_of_starts, groups_of_peds):
     ET = np.zeros((number_of_starts, groups_of_peds))
     for i in range(1,groups_of_peds + 1):
         evacuation_time = run_multiple_times(dim, i, number_of_starts)
-        ET[:,i] = evacuation_time
+        ET[:,i-1] = evacuation_time
     return ET
 
 ET = generate_dataset(dim = 21, number_of_starts = 200, groups_of_peds = 5)
