@@ -74,8 +74,8 @@ def heatmap(X, savefigure = False, plotpath = "./plots/heatmap.jpg"):
     
     fig = px.imshow(data, y=[1,2,3,4], x=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], labels={
                      "y": "Počet chodců",
-                     "x": "Evakuační čas"})
-    fig.layout.height = 300
+                     "x": "Evakuační čas [v desítkách iterací]"})
+    fig.layout.height = 400
     fig.layout.width = 800
     # fig.update_xaxes(range=[min(df.index)+1,max(df.index)+1])
     # fig.update_yaxes(range=[min(df.columns),max(df.columns)])
@@ -90,9 +90,9 @@ def generate_dataset(dim, number_of_starts, groups_of_peds):
         ET[:,i-1] = evacuation_time
     return ET, viewed_percent
 
-# ET, viewed_percent = generate_dataset(dim = 21, number_of_starts = 100, groups_of_peds = 3)
-# scatter(viewed_percent, True)
+ET, viewed_percent = generate_dataset(dim = 21, number_of_starts = 100, groups_of_peds = 3)
+scatter(viewed_percent, True)
 
-ET = np.load("./ET.npy")
-heatmap(ET, True)
+# ET = np.load("./ET.npy")
+# heatmap(ET, True)
 

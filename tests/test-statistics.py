@@ -91,7 +91,7 @@ def bar(interactions, dim_range, ped_number_range, savefigure = False, plotpath 
     
 dim_range = range(11,17,2)  
 ped_number_range = range(1,4,1)
-number_of_starts = 100
+number_of_starts = 200
 
 interactions = test_settings(dim_range, ped_number_range, number_of_starts)
 
