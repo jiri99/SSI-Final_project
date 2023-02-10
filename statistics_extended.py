@@ -91,7 +91,8 @@ number_of_starts = 100
 
 interactions = test_settings(dim_range, ped_number_range, number_of_starts)
 
-bar(interactions, dim_range, ped_number_range)
+bar(interactions, dim_range, ped_number_range, "./plots/barplot.jpg")
+bar(interactions, dim_range, ped_number_range, "./plots/barplot.pdf")
 
 # interactions_single = run_single_time(21,3)
 # hist(interactions_single)

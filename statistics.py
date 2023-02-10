@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import map as m
 import process as p
+import kaleido
 
 
 def run_multiple_times(dim, ped_number, number_of_starts, save_iter = False):
