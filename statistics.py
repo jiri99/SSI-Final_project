@@ -36,6 +36,8 @@ def map_viewed(removed_pedestrian):
     unique, counts = np.unique(removed_pedestrian["map"], return_counts=True)
     values = dict(zip(unique, counts))
     not_viewed = values[0]
+    if(not_viewed > 200):
+        print(removed_pedestrian["map"])
     viewed_percent = 1 - not_viewed/((dim-2)*((dim-1)/2) + (dim-1)/2)
     return viewed_percent*100, removed_pedestrian["time"]
     
@@ -63,16 +65,20 @@ def scatter(viewed_percent, savefigure = False, plotpath = "./plots/scatter.jpg"
 
 def heatmap(X, savefigure = False, plotpath = "./plots/heatmap.jpg"):
     X = pd.DataFrame(X)
-    df = pd.DataFrame(columns=range(0,200,25))
-    b = range(0,225,25)
+    df = pd.DataFrame(columns=range(0,200,10))
+    b = range(0,210,10)
     for i in X.columns:
         h = np.histogram(X[i], bins=b)
         df.loc[len(df.index)] = h[0]
-    fig = px.density_heatmap(df, x=df.index, y=df.columns, labels={
-                     "index": "Počet chodců",
-                     "value": "Evakuační čas"})
-    # fig.update_xaxes(range=[1,3])
-    # fig.update_yaxes(range=[0,len(b)-1])
+    data = pd.DataFrame.to_numpy(df)
+    
+    fig = px.imshow(data, y=[1,2,3,4], x=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], labels={
+                     "y": "Počet chodců",
+                     "x": "Evakuační čas"})
+    fig.layout.height = 300
+    fig.layout.width = 800
+    # fig.update_xaxes(range=[min(df.index)+1,max(df.index)+1])
+    # fig.update_yaxes(range=[min(df.columns),max(df.columns)])
     if savefigure:
         fig.write_image(plotpath)
     fig.show()
@@ -84,7 +90,9 @@ def generate_dataset(dim, number_of_starts, groups_of_peds):
         ET[:,i-1] = evacuation_time
     return ET, viewed_percent
 
-ET, viewed_percent = generate_dataset(dim = 21, number_of_starts = 5, groups_of_peds = 3)
-scatter(viewed_percent, True)
+# ET, viewed_percent = generate_dataset(dim = 21, number_of_starts = 100, groups_of_peds = 3)
+# scatter(viewed_percent, True)
+
+ET = np.load("./ET.npy")
 heatmap(ET, True)
 
